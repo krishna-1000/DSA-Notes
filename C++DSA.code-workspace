@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../FRONTEND"
+		},
+		{
+			"path": "../JavaPrograms"
+		},
+		{
+			"path": "../JavaScriptsPrograms"
+		},
+		{
+			"path": "../BACKEND"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"iostream": "cpp",
+			"ostream": "cpp",
+			"cmath": "cpp"
+		},
+		"liveServer.settings.multiRootWorkspaceName": "FRONTEND",
+		"java.configuration.updateBuildConfiguration": "interactive",
+		"java.compile.nullAnalysis.mode": "automatic"
+	}
+}
