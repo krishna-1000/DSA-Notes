@@ -1,4 +1,6 @@
+
 #include <iostream>
+#include <algorithm>
 #include <queue>
 #include <vector>
 using namespace std;
@@ -8,7 +10,7 @@ class GraphImplment
 public:
     vector<vector<int>> createGridGraph(vector<vector<int>> &edges)
     {
-        vector<vector<int>> grid(6, vector<int>(6, 0));
+        vector<vector<int>> grid(4, vector<int>(5, 0));
         for (vector<int> niegh : edges)
         {
             int raw = niegh[0];
@@ -203,7 +205,7 @@ public:
         while (!positionQueue.empty())
         {
             int sizeOfQueue = positionQueue.size();
-            bool flag = false;
+            
             for (int i = 0; i < sizeOfQueue; i++)
             {
                 pair<int, int> rowCol = positionQueue.front();
@@ -223,7 +225,6 @@ public:
                     {
                         positionQueue.push({nr, nc});
                         visited[nr][nc] = 1;
-                        flag = true;
                     }
                 }
             }
@@ -232,18 +233,94 @@ public:
         }
         return -1;
     }
+
+    vector<pair<int, int>> shortestPath2(vector<vector<int>> &grid)
+    {
+        int n = grid.size();
+        int m = grid[0].size();
+        vector<pair<int, int>> path;
+
+        if (grid[0][0] == 1 || grid[n - 1][m - 1] == 1)
+        {
+            return path;
+        }
+
+        vector<vector<int>> visited(n, vector<int>(m, 0));
+        queue<pair<int, int>> nodeQueue;
+        vector<vector<pair<int, int>>> parentGrid(n, vector<pair<int, int>>(m, {-1, -1}));
+        vector<int> dr = {1, -1, 0, 0};
+        vector<int> dc = {0, 0, 1, -1};
+        nodeQueue.push({0, 0});
+        visited[0][0] = 1;
+
+        while (!nodeQueue.empty())
+        {
+            pair<int, int> currentNode = nodeQueue.front();
+            nodeQueue.pop();
+            int r = currentNode.first;
+            int c = currentNode.second;
+
+            if (r == n - 1 && c == m - 1)
+            {
+                break;
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                int row = r + dr[i];
+                int col = c + dc[i];
+
+                if (row >= 0 && col >= 0 && row < n && col < m &&
+                    grid[row][col] == 0 && !visited[row][col])
+                {
+                    nodeQueue.push({row, col});
+                    visited[row][col] = 1;
+                    parentGrid[row][col] = {r, c};
+                }
+            }
+        }
+
+        int r = n - 1;
+        int c = m - 1;
+
+        if (!visited[r][c])
+            return path;
+
+        while (r != 0 || c != 0)
+        {
+            path.push_back({r, c});
+            pair<int, int> rowCol = parentGrid[r][c];
+            r = rowCol.first;
+            c = rowCol.second;
+        }
+        path.push_back({r, c});
+        reverse(path.begin(), path.end());
+
+        return path;
+    }
 };
 
 int main()
 {
     GraphImplment gimp;
-    vector<vector<int>> edges = {{1, 0}, {1, 1}, {0, 1}, {3, 3}, {3, 2}, {1, 2}, {5, 1}, {1, 3}, {2, 3}, {3, 5}, {4, 5}, {4, 1}};
+    vector<vector<int>> edges = {{3, 0}, {2, 2}, {0, 4}, {2, 4},};
     vector<vector<int>> grid = gimp.createGridGraph(edges);
     // gimp.floodFill(grid, 1, 2, 2);
     // gimp.numberOfIsland(grid);
     // cout << "minute " << gimp.rottenGrid(grid) << endl;
     gimp.printGrid(grid);
-    cout << "Shortest path steps = " << gimp.shortestPath(grid);
-
+    vector<pair<int, int>> path = gimp.shortestPath2(grid);
+    if (path.empty())
+    {
+        cout << "there is path exist";
+    }
+    else
+    {
+        for (pair<int, int> it : path)
+        {
+            
+            cout << "{ " << it.first << "," << it.second << "} ";
+        }
+    }
     return 0;
 }
